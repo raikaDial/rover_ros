@@ -45,7 +45,7 @@ void serialEvent() {
 		}
 		// Validate data with 16-bit checksum
 		else if(serial_state == READ_CHECKSUM) {
-			serial_checksum += byte;
+			serial_checksum |= (byte << 8*(1 - serial_checksum_cnt));
 
 			if(++serial_checksum_cnt == 2) {
 				uint16_t check = 0;
@@ -58,6 +58,7 @@ void serialEvent() {
 				serial_data_bytes_expected = 0;
 				serial_data_bytes_rxd = 0;
 				serial_checksum = 0;
+				serial_checksum_cnt = 0;
 				serial_state = SYNC;
 			}
 		}
