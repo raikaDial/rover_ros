@@ -1,0 +1,8 @@
+[submodule "ROS/catkin_ws/src/serial"]
+	path = ROS/catkin_ws/src/serial
+	url = https://github.com/wjwwood/serial.git
+	branch = master
+[submodule "ROS/catkin_ws/src/joystick_drivers"]
+	path = ROS/catkin_ws/src/joystick_drivers
+	url = https://github.com/ros-drivers/joystick_drivers.git
+	branch = master
