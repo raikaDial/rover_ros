@@ -3,6 +3,7 @@
 
 #include <Sabertooth.h>
 #include <Servo.h>
+#include "RobotCommands.h"
 
 #define SABERTOOTH_ADDRESS 128
 #define SABERTOOTH_DRIVE_MOTOR 1
@@ -12,22 +13,6 @@
 #define LED_RED_PIN 9
 #define LED_GREEN_PIN 10
 #define LED_BLUE_PIN 11
-
-// Robot Commands Sent over Serial
-enum RobotCommand {
-	CMD_ROBOT_NOOP,
-	CMD_ROBOT_DRIVE,
-	CMD_ROBOT_LED
-};
-
-struct RobotDrive {
-	int8_t m_drive_power; // -127 full reverse, 0 stop, 127 full forward
-	uint8_t m_steering_servo_angle; // 0 deg for full left, 180 deg full right 
-};
-
-struct RobotLED {
-	uint8_t m_red, m_blue, m_green;
-};
 	
 class Robot {
 	public:

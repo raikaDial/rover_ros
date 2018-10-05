@@ -1,5 +1,4 @@
 #include "Robot.h"
-#include <SoftwareSerial.h>
 
 Robot::Robot() 
 	:  m_sabertooth(SABERTOOTH_ADDRESS, Serial3)
@@ -8,7 +7,6 @@ Robot::Robot()
 void Robot::init() {
 	// For whatever reason, this junk of code can't be in the constructor.
 	//     Issue with Arduino not being initialized or something.
-	//delay(1000);
 	Serial3.begin(38400);
 	m_sabertooth.autobaud();
 	m_steering_servo.attach(STEERING_SERVO_PIN);
