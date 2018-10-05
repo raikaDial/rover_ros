@@ -10,14 +10,34 @@ uint16_t serial_checksum = 0;
 uint8_t serial_checksum_cnt = 0;
 // *********** //
 
+uint32_t millis_last_toggle = 0;
+bool toggle = false;
+
 Robot rover;
 
 void setup() {
+	rover.init();
 	Serial.begin(115200);
+	pinMode(13, OUTPUT);
 }
 
 void loop() {
+	// steering_servo.write(90);
+
+	// delay(500);
+	// steering_servo.write(180);
+	// delay(500);
 	rover.update();
+
+	if(millis() - millis_last_toggle > 1000) {
+		millis_last_toggle = millis();
+		digitalWrite(13, toggle);
+		toggle = !toggle;
+		// if(toggle)
+		// 	rover.m_sabertooth.motor(1, 127);
+		// else
+		// 	rover.m_sabertooth.motor(1, 0);
+	}
 }
 
 // Serial interrupt to process received data
@@ -54,6 +74,10 @@ void serialEvent() {
 				}
 				if(check == serial_checksum) {
 					rover.processSerialPacket(serial_packet, serial_data_bytes_rxd);
+					Serial.println("CP");//"Correct Packet");
+				}
+				else {
+					Serial.println("IP");//Invalid Packet");
 				}
 				serial_data_bytes_expected = 0;
 				serial_data_bytes_rxd = 0;

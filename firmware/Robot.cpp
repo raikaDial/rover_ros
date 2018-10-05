@@ -1,10 +1,15 @@
 #include "Robot.h"
+#include <SoftwareSerial.h>
 
 Robot::Robot() 
-	: m_sabertooth_serial(SABERTOOTH_RX_PIN, SABERTOOTH_TX_PIN), m_sabertooth(SABERTOOTH_ADDRESS)
-{
-	// Configure Actuators
-	m_sabertooth_serial.begin(9600);
+	:  m_sabertooth(SABERTOOTH_ADDRESS, Serial3)
+{}
+
+void Robot::init() {
+	// For whatever reason, this junk of code can't be in the constructor.
+	//     Issue with Arduino not being initialized or something.
+	//delay(1000);
+	Serial3.begin(38400);
 	m_sabertooth.autobaud();
 	m_steering_servo.attach(STEERING_SERVO_PIN);
 }
@@ -32,6 +37,10 @@ void Robot::processSerialPacket(uint8_t* packet, uint8_t size) {
 			default:
 				m_current_robot_command = CMD_ROBOT_NOOP;
 		}
+	}
+	// Clear packet
+	for(uint8_t i=0; i<size; ++i) {
+		packet[i] = 0; 
 	}
 }
 
