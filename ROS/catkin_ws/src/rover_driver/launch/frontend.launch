@@ -1,0 +1,5 @@
+<launch>
+	<node type="frontend_node" pkg="rover_driver" name="frontend_node" output="screen"/>
+	
+	<node type="joy_node" pkg="joy" name="joy_node"/>
+</launch>

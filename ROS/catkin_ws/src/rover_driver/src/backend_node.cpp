@@ -1,8 +1,10 @@
 #include "backend.h"
 
-Backend::Backend(ros::NodeHandle nh) : m_nh(nh) {
+Backend::Backend(ros::NodeHandle nh) : m_nh(nh), m_drive_cmd_timeout(0.5) {
 	m_robot_drive.m_drive_power = 0;
 	m_robot_drive.m_steering_servo_angle = 90;
+	
+	m_robot_drive_sub = m_nh.subscribe<std_msgs::UInt8MultiArray>("robot_drive_power", 1000, &Backend::robotDriveCb, this);
 	
 	// ***** Setup the Serial Port ***** //
 	// Set serial configuration
@@ -76,11 +78,30 @@ void Backend::transmitPacket(const std::vector<uint8_t> & data) {
 	
 	try {
 		// Transmit Packet
+		std::cout << "Sending Packet: ";
+		for(int i=0; i< packet.size(); ++i) {
+			printf("%u ", packet[i]);
+		}
+		std::cout << std::endl;
 		m_serial_port -> write(packet);
 	}
 	catch(serial::IOException & e) {
 		// We lost connection to the Arduino. Attempt to reconnect.
 		connectToSerial();
+	}
+}
+
+void Backend::robotDriveCb(const std_msgs::UInt8MultiArray::ConstPtr & msg) {
+	
+	m_robot_drive.m_drive_power = (int8_t) msg -> data[0];
+	m_robot_drive.m_steering_servo_angle = msg -> data[1];
+	m_time_last_drive_cmd_rxd = ros::Time::now();
+}
+
+void Backend::update() {
+	// Check for lost comms with frontend and stop rover if needed.
+	if((ros::Time::now() - m_time_last_drive_cmd_rxd).toSec() > m_drive_cmd_timeout) {
+		m_robot_drive.m_drive_power=0;
 	}
 }
 
@@ -100,6 +121,7 @@ int main(int argc, char** argv) {
 			time_last_transmit = ros::Time::now();
 		}
 		ros::spinOnce();
+		backend.update();
 	}
 	
 	return 0;

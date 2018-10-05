@@ -3,6 +3,7 @@
 
 #include <ros/ros.h>
 #include <serial/serial.h>
+#include <std_msgs/UInt8MultiArray.h>
 #include <rover_driver/RobotCommands.h>
 #include <string>
 #include <vector>
@@ -37,6 +38,10 @@ class Backend {
 		void connectToSerial();
 		void sendDriveCommand();
 		void transmitPacket(const std::vector<uint8_t> & data);
+		
+		void robotDriveCb(const std_msgs::UInt8MultiArray::ConstPtr & msg);
+		
+		void update();
 
 	private:	
 		ros::NodeHandle m_nh;
@@ -45,8 +50,13 @@ class Backend {
 		RobotDrive m_robot_drive;
 		RobotLED m_robot_LED;
 		
+		ros::Time m_time_last_drive_cmd_rxd;
+		// If it's been longer than this since receiving the last drive command,
+		//     stop the rover.
+		double m_drive_cmd_timeout;  
+		
 		// Subscribers
-		//ros::Subscriber 
+		ros::Subscriber m_robot_drive_sub;
 };
 
 #endif // BACKEND_H_INCLUDED
