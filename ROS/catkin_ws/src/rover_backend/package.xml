@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>rover_backend</name>
+  <version>1.0.0</version>
+  <description>The rover_backend package</description>
+
+  <maintainer email="rhongoimiant@todo.todo">rhongoimiant</maintainer>
+
+  <license>TODO</license>
+
+  <depend>roscpp</depend>
+  <depend>serial</depend>
+  <buildtool_depend>catkin</buildtool_depend>
+
+</package>

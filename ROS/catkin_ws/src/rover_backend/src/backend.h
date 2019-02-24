@@ -4,7 +4,7 @@
 #include <ros/ros.h>
 #include <serial/serial.h>
 #include <std_msgs/UInt8MultiArray.h>
-#include <rover_driver/RobotCommands.h>
+#include <RobotCommands.h>
 #include <string>
 #include <vector>
 
